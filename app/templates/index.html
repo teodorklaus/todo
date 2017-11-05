@@ -1,0 +1,126 @@
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+<div id="myDIV" class="header">
+  <h2>My To Do List</h2>
+
+  <input type="text" name="text" id="text" placeholder="Title...">
+  <input type="submit" value="Add" id='submitBtn' name='submitBtn' class="addBtn">
+
+</div>
+
+<ul id="messages">
+  {% for message in messages %}
+    <li id = '{{ message.id }}' class = '{{ message.chacked }}'>
+      {{ message.todo_text }}
+   {% endfor %}
+</ul>
+<script type=text/javascript
+          src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script type=text/javascript>
+
+$(function() {
+
+
+    $("#submitBtn").click(function() {
+        var ul = document.getElementById('messages');
+        var text_value = document.getElementById('text').value;
+        var li = document.createElement("Li");
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+
+         $.ajax({
+            type: "GET",
+            url: '/add_todo',
+            contentType: "application/xml; charset=utf-8",
+            data: { echoValue: $('input[name="text"]').val() },
+            success: function(data) {
+
+                //location.reload();
+                //console.log(jqxhr);
+                li.appendChild(document.createTextNode(text_value));
+                span.className = "close";
+                span.appendChild(txt);
+//                li.set(id)
+                li.appendChild(span);
+                ul.appendChild(li);
+//                var jqxhr = $.getJSON( "/add_todo", function() {
+//                       console.log( "success" );
+//
+//                      })
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+
+    });
+  });
+
+
+
+//Close button
+var myNodelist = document.getElementsByTagName("LI");
+var i;
+for (i = 0; i < myNodelist.length; i++) {
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.onclick = 'Drop';
+  span.appendChild(txt);
+  myNodelist[i].appendChild(span);
+}
+
+
+//delete element from list and database
+$(function() {
+
+    //$('#messages li').click(function() {
+    $('.close').click(function(e) {
+        e.stopPropagation();
+        var $this = $(this);
+        var todoid = $this.parent().attr('id');
+        var watch = this.parentElement;
+        watch.style.display = "none";
+        $.ajax({
+            type: "GET",
+            url: '/drop_todo',
+            contentType: "application/xml; charset=utf-8",
+            data: { echoDelete: (todoid) },
+            success: function(data) {
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
+  });
+
+//add check on element
+$(function() {
+
+    $('#messages li').click(function(e) {
+    //$('.close').click(function(e) {
+        e.target.classList.toggle("checked");
+        //e.stopPropagation();
+        var $this = $(this);
+        var todoid = this.id
+        var todoclass = $this.attr("class");
+        //var watch = this.parentElement;
+        //watch.style.display = "none";
+        $.ajax({
+            type: "GET",
+            url: '/check_todo',
+            contentType: "application/xml; charset=utf-8",
+            data: { echoChecked: (todoclass), echoID: (todoid) },
+            success: function(data) {
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
+  });
+
+</script>
