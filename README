@@ -1,0 +1,20 @@
+Readme how to start my To-Do project:
+
+1. Create virtual env Python 2.7
+
+2. install libs:
+
+   - pip install -r requirements.txt
+
+3. tell flask about the right application using:
+
+    linux: export FLASK_APP=./Path_To/run.py
+    windows: set FLASK_APP=/path_to/run.py
+
+4. to create database use:
+
+    flask initdb
+
+5. now start file run.py:
+
+    go to http://127.0.0.1:5000
