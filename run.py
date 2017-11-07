@@ -13,14 +13,18 @@ def homepage():
     return render_template('index.html', messages=query_db('''select id, chacked, todo_text from todolist'''))
 
 
-@app.route('/add_todo', methods=['GET', 'POST'])
+@app.route('/add_todo', methods=['GET'])
 def add_todo():
     ret_data_add = {"value": request.args.get('echoValue')}
     db = get_db()
     db.execute('''insert into todolist (chacked, todo_text)
                  values (?, ?)''', ('notchecked', ret_data_add['value']))
     db.commit()
+    return ('add')
 
+
+@app.route('/add_todo', methods=['POST'])
+def add_todo1():
     cur.execute('''select id, chacked, todo_text from todolist where id = (select max(id) from todolist)''', ())
     rows = cur.fetchall()
     add_json = json.dumps(rows)

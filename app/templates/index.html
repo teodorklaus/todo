@@ -19,44 +19,51 @@
 <script type=text/javascript>
 
 $(function() {
-
-
-    $("#submitBtn").click(function() {
-        var ul = document.getElementById('messages');
-        var text_value = document.getElementById('text').value;
-        var li = document.createElement("Li");
-        var span = document.createElement("SPAN");
-        var txt = document.createTextNode("\u00D7");
-
+   $("#submitBtn").click(function() {
          $.ajax({
             type: "GET",
             url: '/add_todo',
             contentType: "application/xml; charset=utf-8",
             data: { echoValue: $('input[name="text"]').val() },
             success: function(data) {
-
-                //location.reload();
-                //console.log(jqxhr);
-                li.appendChild(document.createTextNode(text_value));
-                span.className = "close";
-                span.appendChild(txt);
-//                li.set(id)
-                li.appendChild(span);
-                ul.appendChild(li);
-//                var jqxhr = $.getJSON( "/add_todo", function() {
-//                       console.log( "success" );
-//
-//                      })
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert(errorThrown);
             }
         });
-
-    });
+       });
   });
 
-
+$(function() {
+    $("#submitBtn").click(function() {
+        var ul = document.getElementById('messages');
+        var text_value = document.getElementById('text').value;
+        var li = document.createElement("Li");
+        var span = document.createElement("SPAN");
+        var txt = document.createTextNode("\u00D7");
+        $.ajax({
+            type: 'POST',
+            url: '/add_todo',
+            data: { get_param: 'value' },
+            dataType: 'json',
+            success: function (data) {
+                $.each(data, function(index, element) {
+                    //var parsedata = JSON.parse(data);
+                    JSON.stringify(data);
+                    console.log(data['0']['id']);
+                li.appendChild(document.createTextNode(data['0']['todo_text']));
+                span.className = "close";
+                span.appendChild(txt);
+                li.setAttribute('id', data['0']['id']);
+                li.setAttribute('class', data['0']['chacked'])
+                li.appendChild(span);
+                ul.appendChild(li);
+                });
+            }
+        });
+    });
+    });
+//}
 
 //Close button
 var myNodelist = document.getElementsByTagName("LI");
@@ -98,7 +105,6 @@ $(function() {
 
 //add check on element
 $(function() {
-
     $('#messages li').click(function(e) {
     //$('.close').click(function(e) {
         e.target.classList.toggle("checked");
