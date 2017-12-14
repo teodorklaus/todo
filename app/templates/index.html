@@ -14,6 +14,7 @@
       {{ message.todo_text }}
    {% endfor %}
 </ul>
+{#get from local filesystem#}
 <script type=text/javascript
           src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script type=text/javascript>
@@ -25,16 +26,14 @@ $(function() {
             url: '/add_todo',
             contentType: "application/xml; charset=utf-8",
             data: { echoValue: $('input[name="text"]').val() },
-            success: function(data) {
-            },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert(errorThrown);
             }
         });
        });
-  });
 
-$(function() {
+
+
     $("#submitBtn").click(function() {
         var ul = document.getElementById('messages');
         var text_value = document.getElementById('text').value;
@@ -62,26 +61,8 @@ $(function() {
             }
         });
     });
-    });
-//}
-
-//Close button
-var myNodelist = document.getElementsByTagName("LI");
-var i;
-for (i = 0; i < myNodelist.length; i++) {
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode("\u00D7");
-  span.className = "close";
-  span.onclick = 'Drop';
-  span.appendChild(txt);
-  myNodelist[i].appendChild(span);
-}
-
 
 //delete element from list and database
-$(function() {
-
-    //$('#messages li').click(function() {
     $('.close').click(function(e) {
         e.stopPropagation();
         var $this = $(this);
@@ -93,24 +74,21 @@ $(function() {
             url: '/drop_todo',
             contentType: "application/xml; charset=utf-8",
             data: { echoDelete: (todoid) },
-            success: function(data) {
-
-            },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert(errorThrown);
             }
         });
     });
-  });
+
 
 //add check on element
-$(function() {
+
     $('#messages li').click(function(e) {
     //$('.close').click(function(e) {
         e.target.classList.toggle("checked");
         //e.stopPropagation();
         var $this = $(this);
-        var todoid = this.id
+        var todoid = this.id;
         var todoclass = $this.attr("class");
         //var watch = this.parentElement;
         //watch.style.display = "none";
@@ -119,14 +97,22 @@ $(function() {
             url: '/check_todo',
             contentType: "application/xml; charset=utf-8",
             data: { echoChecked: (todoclass), echoID: (todoid) },
-            success: function(data) {
-
-            },
             error: function(jqXHR, textStatus, errorThrown) {
                 alert(errorThrown);
             }
         });
     });
   });
-
+//Close button
+// use jqury todo init when document will be loaded. When page was loaded init all functions and other stuff
+var myNodelist = document.getElementsByTagName("LI");
+var i;
+for (i = 0; i < myNodelist.length; i++) {
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.onclick = 'Drop';
+  span.appendChild(txt);
+  myNodelist[i].appendChild(span);
+}
 </script>
